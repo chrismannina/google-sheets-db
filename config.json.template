@@ -1,0 +1,12 @@
+{
+    "google_sheet_config": {
+        "spreadsheet_name": "Your Spreadsheet Name",
+        "worksheet_name": "Your Worksheet Name"
+    },
+    "db_query": "select * from YourTableName",
+    "cr_backup_filename": "backup",
+    "merge_keys": ["key1", "key2"],
+    "sql_query": "UPDATE YourTableName SET Column1 = :param1, Column2 = :param2 WHERE Key1 = :key1 AND Key2 = :key2;",
+    "sql_params": ["param1", "param2"],
+    "debug": true
+}

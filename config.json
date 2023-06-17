@@ -1,0 +1,56 @@
+[
+    {
+        "task": "update humanity cr and gsheet",
+
+        "df_google": {
+            "file": "Staffing and Workload - Cross References", 
+            "sheet": "Humanity_Position_CR"
+        },
+
+        "df_pharmdw": {
+            "get_method": "select",
+            "select_query": "select * from cr_vw.humanity_shift_dep_loc"
+        },
+
+        "update_pharmdw": {
+            "enabled": true,
+            "set_method": "update",
+            "primary_key": "schedule_id",
+            "column_mapping": {
+                "Employee_Type": "pharmacist_technician_flag",
+                "Division": "division_name",
+                "Area": "area_name"
+            },
+            "update_query": "UPDATE PharmDW.CR.Humanity_Shift_Dep_Loc SET Pharmacist_Technician_Flag = :Employee_Type, Area_ID = :area WHERE schedule_id = :schedule_id;",
+            "update_params": ["Employee_Type", "area_id"],
+            "skip_conditions": {"area_id": "#N/A"}
+        },
+
+        "update_google": {
+            "enabled": true,
+            "merge_on": ["schedule_id"],
+            "google_cols": ["Humanity_Account", "Humanity_Location", "schedule_id", "Position_Name", "Employee_Type", "Division", "Area"],
+            "pharmdw_cols": ["shift_group_name", "location_name", "schedule_id", "schedule_name", "pharmacist_technician_flag", "division_name", "area_name"],
+            "opt_updates": {
+                "updated_by" :"automated script",
+                "Notes" :"New position. Please fill out columns G, H, I.",
+                "function": {
+                    "division_id": "=ARRAYFORMULA(INDEX(Division_Lookup!A:A, MATCH(F{row}, Division_Lookup!B:B, 0)))",
+                    "area_id": "=ARRAYFORMULA(INDEX(Area_Lookup!A:A, MATCH(H{row}&G{row}, Area_Lookup!C:C&Area_Lookup!B:B, 0)))" 
+                }
+            }
+        },
+
+        "save_backup": {
+            "enabled": true,
+            "filename": "Humanity_CR",
+            "filepath": "C:/Users/machris/projects/chris_dev/google_sheets_cr/backup"
+        },
+
+        "email": {
+            "enabled": false
+        },
+
+        "debug": true
+    }
+]
